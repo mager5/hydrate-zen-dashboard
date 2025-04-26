@@ -1,16 +1,18 @@
 
 import React, { useState } from 'react';
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bell, Plus } from 'lucide-react';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import WaveProgress from './WaveProgress';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const WaterTracker = () => {
   const [waterAmount, setWaterAmount] = useState<number>(0);
-  const [dailyGoal] = useState<number>(2000); // 2L daily goal
+  const [dailyGoal] = useState<number>(2000);
   const [progress, setProgress] = useState<number>(0);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleAddWater = () => {
     if (waterAmount <= 0) {
@@ -39,21 +41,21 @@ const WaterTracker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white font-inter">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Водный баланс</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/50 to-white font-inter">
+      <div className="mx-auto max-w-4xl px-4 py-8">
+        <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-lg p-6 md:p-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Водный баланс</h1>
           
           <div className="space-y-6">
-            <div className="bg-blue-50 p-6 rounded-xl">
+            <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-gray-700 mb-4">Прогресс дня</h2>
-              <Progress value={progress * 100} className="h-4" />
-              <p className="mt-2 text-sm text-gray-600">
+              <WaveProgress progress={progress * 100} />
+              <p className="mt-4 text-center text-gray-600">
                 {Math.round(progress * dailyGoal)}мл / {dailyGoal}мл
               </p>
             </div>
 
-            <div className="flex gap-4">
+            <div className={`flex gap-4 ${isMobile ? 'flex-col' : ''}`}>
               <Input
                 type="number"
                 placeholder="Количество воды (мл)"
@@ -61,7 +63,10 @@ const WaterTracker = () => {
                 value={waterAmount || ''}
                 onChange={(e) => setWaterAmount(Number(e.target.value))}
               />
-              <Button onClick={handleAddWater} className="bg-blue-500 hover:bg-blue-600">
+              <Button 
+                onClick={handleAddWater} 
+                className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 transition-all duration-300"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Добавить
               </Button>
@@ -70,7 +75,7 @@ const WaterTracker = () => {
             <Button 
               variant="outline" 
               onClick={handleReminder}
-              className="w-full border-blue-200 hover:bg-blue-50"
+              className="w-full border-blue-200 hover:bg-blue-50 transition-colors duration-300"
             >
               <Bell className="mr-2 h-4 w-4" />
               Установить напоминание
