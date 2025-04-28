@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,7 +6,6 @@ import { Bell, Plus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import WaveProgress from './WaveProgress';
 import { useIsMobile } from '@/hooks/use-mobile';
-import Navigation from './Navigation';
 import AchievementPopup from './AchievementPopup';
 import WeeklyChart from './WeeklyChart';
 
@@ -131,7 +131,7 @@ const WaterTracker = () => {
         </div>
       </div>
       <AchievementPopup type={achievementType} isVisible={showAchievement} />
-      <Navigation />
+      {/* Remove Navigation from here - it should only be rendered within Router context */}
     </>
   );
 };
