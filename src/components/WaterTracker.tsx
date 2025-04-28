@@ -6,6 +6,25 @@ import { useToast } from "@/hooks/use-toast";
 import WaveProgress from './WaveProgress';
 import { useIsMobile } from '@/hooks/use-mobile';
 import Navigation from './Navigation';
+import AchievementPopup from './AchievementPopup';
+import WeeklyChart from './WeeklyChart';
+
+const MOTIVATION_MESSAGES = [
+  "Вода - источник жизни и энергии!",
+  "Каждый глоток приближает вас к цели!",
+  "Оставайтесь гидратированными!",
+  "Вода - ключ к хорошему самочувствию!"
+];
+
+const mockWeekData = [
+  { day: "Пн", amount: 1800, goal: 2000 },
+  { day: "Вт", amount: 2100, goal: 2000 },
+  { day: "Ср", amount: 1900, goal: 2000 },
+  { day: "Чт", amount: 2300, goal: 2000 },
+  { day: "Пт", amount: 1700, goal: 2000 },
+  { day: "Сб", amount: 2000, goal: 2000 },
+  { day: "Вс", amount: 1500, goal: 2000 },
+];
 
 const WaterTracker = () => {
   const [waterAmount, setWaterAmount] = useState<number>(0);
@@ -14,6 +33,8 @@ const WaterTracker = () => {
   const [isWaving, setIsWaving] = useState<boolean>(false);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [showAchievement, setShowAchievement] = useState<boolean>(false);
+  const [achievementType, setAchievementType] = useState<'daily' | 'weekly' | 'streak'>('daily');
 
   const handleAddWater = () => {
     if (waterAmount <= 0) {
@@ -32,9 +53,15 @@ const WaterTracker = () => {
       setIsWaving(true);
     }
 
+    if (newProgress >= 100 && !showAchievement) {
+      setAchievementType('daily');
+      setShowAchievement(true);
+      setTimeout(() => setShowAchievement(false), 5000);
+    }
+
     toast({
       title: "Отлично!",
-      description: `Добавлено ${waterAmount}мл воды`,
+      description: `${MOTIVATION_MESSAGES[Math.floor(Math.random() * MOTIVATION_MESSAGES.length)]} +${waterAmount}мл`,
     });
   };
 
@@ -86,6 +113,11 @@ const WaterTracker = () => {
                 </Button>
               </div>
 
+              <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 shadow-sm">
+                <h2 className="text-xl font-semibold text-gray-700 mb-4">Статистика недели</h2>
+                <WeeklyChart data={mockWeekData} />
+              </div>
+
               <Button 
                 variant="outline" 
                 onClick={handleReminder}
@@ -98,6 +130,7 @@ const WaterTracker = () => {
           </div>
         </div>
       </div>
+      <AchievementPopup type={achievementType} isVisible={showAchievement} />
       <Navigation />
     </>
   );
