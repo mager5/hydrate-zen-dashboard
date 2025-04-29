@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 const Index = () => {
   return (
     <>
-      <div className="container mx-auto max-w-4xl px-4 py-8 space-y-6 pb-20 md:pb-8">
+      <div className="container mx-auto max-w-4xl px-4 py-8 space-y-6 pb-24 md:pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <LevelProgress />
           <StreakCounter />

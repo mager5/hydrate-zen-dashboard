@@ -17,7 +17,7 @@ const historyData = [
 const History = () => {
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50/50 to-white p-4 font-inter pb-20 md:pb-0 md:pt-20">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50/50 to-white p-4 font-inter pb-24 md:pb-0 md:pt-20">
         <div className="mx-auto max-w-4xl">
           <Card className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
             <CardHeader>
