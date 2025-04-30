@@ -35,8 +35,9 @@ const WaterTracker = () => {
     checkAndUpdateStreak();
   }, []);
 
-  const handleAddWater = () => {
-    if (waterAmount <= 0) {
+  // New function to add water that both buttons will use
+  const addWaterIntake = (amount: number) => {
+    if (amount <= 0) {
       toast({
         title: "Ошибка",
         description: "Пожалуйста, введите корректное количество воды",
@@ -46,7 +47,7 @@ const WaterTracker = () => {
     }
 
     const currentWaterAmount = progress * dailyGoal;
-    const newTotal = currentWaterAmount + waterAmount;
+    const newTotal = currentWaterAmount + amount;
     const newProgress = Math.min(newTotal / dailyGoal, 1);
     
     setProgress(newProgress);
@@ -56,7 +57,7 @@ const WaterTracker = () => {
     }
 
     // Record water intake for gamification
-    recordWaterIntake(waterAmount);
+    recordWaterIntake(amount);
 
     // Check if daily goal is reached
     if (newTotal >= dailyGoal && currentWaterAmount < dailyGoal) {
@@ -68,8 +69,20 @@ const WaterTracker = () => {
 
     toast({
       title: "Отлично!",
-      description: `${MOTIVATION_MESSAGES[Math.floor(Math.random() * MOTIVATION_MESSAGES.length)]} +${waterAmount}мл`,
+      description: `${MOTIVATION_MESSAGES[Math.floor(Math.random() * MOTIVATION_MESSAGES.length)]} +${amount}мл`,
     });
+    
+    // Reset input field after adding water
+    setWaterAmount(0);
+  };
+
+  const handleAddWater = () => {
+    addWaterIntake(waterAmount);
+  };
+  
+  // Function for quick add buttons to add water immediately
+  const handleQuickAdd = (amount: number) => {
+    addWaterIntake(amount);
   };
 
   useEffect(() => {
@@ -125,20 +138,21 @@ const WaterTracker = () => {
                     onClick={handleAddWater} 
                     className="bg-blue-500 hover:bg-blue-600 transition-all duration-300 text-white shadow-md rounded-lg h-12 text-base flex items-center gap-2"
                     size="lg"
+                    disabled={!waterAmount}
                   >
                     <Droplet className="h-5 w-5" />
                     <span>Добавить</span>
                   </Button>
                 </div>
                 
-                {/* Кнопки быстрого добавления */}
+                {/* Кнопки быстрого добавления - теперь добавляют воду сразу */}
                 <div className="flex justify-between gap-2">
                   {quickAddAmounts.map((amount) => (
                     <Button
                       key={amount}
                       variant="outline"
                       className="flex-1 border-blue-200 bg-white hover:bg-blue-50 font-medium"
-                      onClick={() => setWaterAmount(amount)}
+                      onClick={() => handleQuickAdd(amount)}
                     >
                       {amount} мл
                     </Button>
