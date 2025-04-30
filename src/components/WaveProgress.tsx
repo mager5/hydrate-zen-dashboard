@@ -9,7 +9,7 @@ const WaveProgress = ({ progress }: WaveProgressProps) => {
   const waveHeight = 100 - progress;
   
   return (
-    <div className="relative h-40 w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-blue-100">
+    <div className="relative h-full w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-blue-100">
       <div 
         className="absolute bottom-0 left-0 w-full transition-all duration-500 ease-out"
         style={{ 

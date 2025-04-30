@@ -7,24 +7,14 @@ import { useToast } from "@/hooks/use-toast";
 import WaveProgress from './WaveProgress';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AchievementPopup from './AchievementPopup';
-import WeeklyChart from './WeeklyChart';
 import { useGamification } from '@/contexts/GamificationContext';
+import { Link } from 'react-router-dom';
 
 const MOTIVATION_MESSAGES = [
   "Вода - источник жизни и энергии!",
   "Каждый глоток приближает вас к цели!",
   "Оставайтесь гидратированными!",
   "Вода - ключ к хорошему самочувствию!"
-];
-
-const mockWeekData = [
-  { day: "Пн", amount: 1800, goal: 2000 },
-  { day: "Вт", amount: 2100, goal: 2000 },
-  { day: "Ср", amount: 1900, goal: 2000 },
-  { day: "Чт", amount: 2300, goal: 2000 },
-  { day: "Пт", amount: 1700, goal: 2000 },
-  { day: "Сб", amount: 2000, goal: 2000 },
-  { day: "Вс", amount: 1500, goal: 2000 },
 ];
 
 const WaterTracker = () => {
@@ -97,50 +87,83 @@ const WaterTracker = () => {
     });
   };
 
+  // Предустановленные значения для быстрого добавления
+  const quickAddAmounts = [100, 200, 300];
+
   return (
     <>
-      <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Водный баланс</h1>
+      <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-lg p-4 transition-all duration-300 hover:shadow-xl">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-3">Водный баланс</h1>
         
-        <div className="space-y-6">
-          <div className={`bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 shadow-sm transition-all duration-300 ${isWaving ? 'animate-wave-pulse' : ''}`}>
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Прогресс дня</h2>
-            <WaveProgress progress={progress * 100} />
-            <p className="mt-4 text-center text-gray-600">
-              {Math.round(progress * dailyGoal)}мл / {dailyGoal}мл
-            </p>
+        <div className="space-y-4">
+          {/* Компактный прогресс */}
+          <div className={`bg-gradient-to-br from-blue-50 to-white rounded-2xl p-3 shadow-sm transition-all duration-300 ${isWaving ? 'animate-wave-pulse' : ''}`}>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-semibold text-gray-700">Прогресс дня</h2>
+              <p className="text-gray-600 font-medium">
+                {Math.round(progress * dailyGoal)}мл / {dailyGoal}мл
+              </p>
+            </div>
+            <div className="h-28 md:h-32">
+              <WaveProgress progress={progress * 100} />
+            </div>
           </div>
 
-          <div className={`flex gap-4 ${isMobile ? 'flex-col' : ''}`}>
-            <Input
-              type="number"
-              placeholder="Количество воды (мл)"
-              className="flex-1 transition-all duration-300 focus:ring-2 focus:ring-blue-200 hover:shadow-sm"
-              value={waterAmount || ''}
-              onChange={(e) => setWaterAmount(Number(e.target.value))}
-            />
+          {/* Блок добавления воды */}
+          <div className="rounded-2xl p-3 bg-gradient-to-br from-blue-50 to-white shadow-sm">
+            <div className="flex flex-col space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  placeholder="Количество воды (мл)"
+                  className="flex-1 transition-all duration-300 focus:ring-2 focus:ring-blue-200 hover:shadow-sm"
+                  value={waterAmount || ''}
+                  onChange={(e) => setWaterAmount(Number(e.target.value))}
+                />
+                <Button 
+                  onClick={handleAddWater} 
+                  className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 transition-all duration-300"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden md:inline">Добавить</span>
+                </Button>
+              </div>
+              
+              {/* Кнопки быстрого добавления */}
+              <div className="flex justify-between gap-2">
+                {quickAddAmounts.map((amount) => (
+                  <Button
+                    key={amount}
+                    variant="outline"
+                    className="flex-1 border-blue-200 hover:bg-blue-50"
+                    onClick={() => setWaterAmount(amount)}
+                  >
+                    {amount} мл
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
             <Button 
-              onClick={handleAddWater} 
-              className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 active:scale-95 group"
+              variant="outline" 
+              onClick={handleReminder}
+              className="flex-1 border-blue-200 hover:bg-blue-50 transition-all duration-300"
             >
-              <Plus className="mr-2 h-4 w-4 group-hover:rotate-180 transition-transform duration-300" />
-              Добавить
+              <Bell className="h-4 w-4" />
+              Напоминание
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 border-blue-200 hover:bg-blue-50 transition-all duration-300"
+              asChild
+            >
+              <Link to="/history">
+                Статистика
+              </Link>
             </Button>
           </div>
-
-          <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Статистика недели</h2>
-            <WeeklyChart data={mockWeekData} />
-          </div>
-
-          <Button 
-            variant="outline" 
-            onClick={handleReminder}
-            className="w-full border-blue-200 hover:bg-blue-50 transition-all duration-300 transform hover:scale-102 active:scale-98 group"
-          >
-            <Bell className="mr-2 h-4 w-4 group-hover:animate-bell-ring" />
-            Установить напоминание
-          </Button>
         </div>
       </div>
       <AchievementPopup type={achievementType} isVisible={showAchievement} />
