@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Plus } from 'lucide-react';
+import { Bell, Plus, Droplet } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import WaveProgress from './WaveProgress';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -96,51 +96,54 @@ const WaterTracker = () => {
         <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-3">Водный баланс</h1>
         
         <div className="space-y-4">
-          {/* Компактный прогресс */}
-          <div className={`bg-gradient-to-br from-blue-50 to-white rounded-2xl p-3 shadow-sm transition-all duration-300 ${isWaving ? 'animate-wave-pulse' : ''}`}>
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-semibold text-gray-700">Прогресс дня</h2>
-              <p className="text-gray-600 font-medium">
-                {Math.round(progress * dailyGoal)}мл / {dailyGoal}мл
-              </p>
-            </div>
-            <div className="h-28 md:h-32">
-              <WaveProgress progress={progress * 100} />
-            </div>
-          </div>
-
-          {/* Блок добавления воды */}
-          <div className="rounded-2xl p-3 bg-gradient-to-br from-blue-50 to-white shadow-sm">
-            <div className="flex flex-col space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  type="number"
-                  placeholder="Количество воды (мл)"
-                  className="flex-1 transition-all duration-300 focus:ring-2 focus:ring-blue-200 hover:shadow-sm"
-                  value={waterAmount || ''}
-                  onChange={(e) => setWaterAmount(Number(e.target.value))}
-                />
-                <Button 
-                  onClick={handleAddWater} 
-                  className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 transition-all duration-300"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span className="hidden md:inline">Добавить</span>
-                </Button>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+            {/* Компактный прогресс - уменьшен размер */}
+            <div className={`md:col-span-2 bg-gradient-to-br from-blue-50 to-white rounded-2xl p-3 shadow-sm transition-all duration-300 ${isWaving ? 'animate-wave-pulse' : ''}`}>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-semibold text-gray-700">Прогресс</h2>
+                <p className="text-gray-600 font-medium">
+                  {Math.round(progress * dailyGoal)}мл / {dailyGoal}мл
+                </p>
               </div>
-              
-              {/* Кнопки быстрого добавления */}
-              <div className="flex justify-between gap-2">
-                {quickAddAmounts.map((amount) => (
-                  <Button
-                    key={amount}
-                    variant="outline"
-                    className="flex-1 border-blue-200 hover:bg-blue-50"
-                    onClick={() => setWaterAmount(amount)}
+              <div className="h-24 md:h-28">
+                <WaveProgress progress={progress * 100} />
+              </div>
+            </div>
+
+            {/* Блок добавления воды - увеличен размер и визуальная заметность */}
+            <div className="md:col-span-3 rounded-2xl p-4 bg-gradient-to-br from-blue-100 to-blue-50 shadow-sm">
+              <div className="flex flex-col space-y-3">
+                <div className="flex gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Количество воды (мл)"
+                    className="flex-1 transition-all duration-300 focus:ring-2 focus:ring-blue-200 hover:shadow-sm"
+                    value={waterAmount || ''}
+                    onChange={(e) => setWaterAmount(Number(e.target.value))}
+                  />
+                  <Button 
+                    onClick={handleAddWater} 
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-white px-5 py-2 h-12 text-base shadow-md"
+                    size="lg"
                   >
-                    {amount} мл
+                    <Droplet className="h-5 w-5 mr-1" />
+                    <span>Добавить</span>
                   </Button>
-                ))}
+                </div>
+                
+                {/* Кнопки быстрого добавления */}
+                <div className="flex justify-between gap-2">
+                  {quickAddAmounts.map((amount) => (
+                    <Button
+                      key={amount}
+                      variant="outline"
+                      className="flex-1 border-blue-200 hover:bg-blue-50 font-medium"
+                      onClick={() => setWaterAmount(amount)}
+                    >
+                      {amount} мл
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
